@@ -1,4 +1,3 @@
-import { IsString } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('users')
@@ -12,7 +11,9 @@ export class User {
     })
     email: string;
 
-    @Column('text')
+    @Column('text', {
+        select: false //Esto es para no devolver la contraseña al hacer una query que me devuelva la entidad user
+    })
     password: string;
 
     @Column('text')
