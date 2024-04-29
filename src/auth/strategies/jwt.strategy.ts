@@ -25,10 +25,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     //Es para realizar validaciones personalizadas. Por ejemplo, que el usuario esté activo etc.
     async validate(payload: JwtPayload): Promise<User> {
 
-        const { email } = payload;
+        const { id } = payload;
         
         const user = await this.userRepository.findOne({
-            where: { email: email }
+            where: { id: id }
         })
 
         if(!user) {
