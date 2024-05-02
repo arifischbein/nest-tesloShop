@@ -1,12 +1,14 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -19,11 +21,14 @@ export class AuthController {
   }
 
   @Get('private')
-  @UseGuards( AuthGuard() )
-  testingPrivateRoute() {
+  @UseGuards(AuthGuard())
+  testingPrivateRoute(
+    @GetUser() user: User
+  ) {
     return {
       ok: true,
-      message: 'Hola mundo private'
+      message: 'Hola mundo private',
+      user
     }
   }
 }
