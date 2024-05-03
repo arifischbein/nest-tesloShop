@@ -55,7 +55,6 @@ export class AuthService {
     }
     
     delete user.password;
-    delete user.id;
     
     return {
       ...user,
