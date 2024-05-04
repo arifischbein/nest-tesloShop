@@ -7,6 +7,7 @@ import { Product } from './entities/product.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid'
 import { ProductImage } from './entities/product-image.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -23,7 +24,7 @@ export class ProductsService {
     private readonly dataSource: DataSource
   ) { }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       /**
        * Destructuring: extraer las imagenes del objeto y el resto de los datos en productDetails 
@@ -33,7 +34,8 @@ export class ProductsService {
 
       const product = this.productRepository.create({
         ...productDetails, //operador spread
-        images: images.map(image => this.productImagesRepository.create({ url: image }))
+        images: images.map(image => this.productImagesRepository.create({ url: image })),
+        user: user
       });
       /*
         Como la operacion de guardado de imagenes se está haciendo dentro de la creacion de productos, no es necesario
@@ -112,7 +114,7 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const {images, ...toUpdate } = updateProductDto;
     /**
      * Preload: Creates a new entity from the given plain javascript object. 
@@ -140,6 +142,9 @@ export class ProductsService {
           image => this.productImagesRepository.create({ url: image })
         );
       }
+
+      product.user = user;
+      
       await queryRunner.manager.save(product); //Esto no es el commit, es solo para guardar los cambios en la transaccion
       // return await this.productRepository.save(product); //Esto ya no se usa porque estamos con el queryRunner
       await queryRunner.commitTransaction();
