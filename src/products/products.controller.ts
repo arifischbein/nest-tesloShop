@@ -6,7 +6,9 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Products') //Esto es de swagger - documentacion del los endpoints
 @Controller('products')
 @Auth() //asi protejo absolutamente todas las rutas de este controlador
 export class ProductsController {
